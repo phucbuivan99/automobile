@@ -1,1 +1,2 @@
-# mqm-seeding-tool
+# tool_forward
+auto_forward message
