@@ -62,6 +62,7 @@ def getData(user_id):
     api_hash = res['api_hash']
     id_group = int(res['id_group'])
 
+
 def main():
     new_offset = 0
     print('hi, now launching...')
@@ -83,14 +84,14 @@ def main():
                 # print(type(first_update_id))
                 if 'channel_post' in current_update:
                     message_id = current_update['channel_post']['message_id']
-                    first_chat_id= current_update['channel_post']['chat']['id']
-                    first_chat_text= current_update['channel_post']['text']
-                    user_id= current_update['channel_post']['sender_chat']['id']
-                    group_title= current_update['channel_post']['chat']['title']
+                    first_chat_id = current_update['channel_post']['chat']['id']
+                    first_chat_text = current_update['channel_post']['text']
+                    user_id = current_update['channel_post']['sender_chat']['id']
+                    group_title = current_update['channel_post']['chat']['title']
                     
                     if first_chat_text:
                         my_bot.send_message(first_chat_id," ")
-                        new_offset = first_update_id +1
+                        new_offset = first_update_id + 1
             
                 else :
                     first_chat_id = current_update['message']['chat']['id']   
@@ -152,8 +153,7 @@ def main():
                         #nếu danh sách rỗng thì gửi đến toàn bộ dialog, ngoại trừ group trung gian
                         if len(detectName(first_chat_text)) == 0:
                             for dialog in client.iter_dialogs():
-                                if dialog.id != id_group:
-                                # id cua group quan ly cac acc clone
+                                if dialog.id != id_group and dialog.id < 0:
                                     print('{} has id {}'.format(dialog.name, dialog.id))
                                     try:
                                         # send_message chỉ gửi được tin nhắn text, tin nhắn có icon thì không gửi được

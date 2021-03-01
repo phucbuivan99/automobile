@@ -66,6 +66,6 @@ class botHandler:
 
 token = '1623181614:AAE0U7Y5BoVjgP3qCA5-tHSYd7bjerpr2Mo' #Token of your bot 
 # username: @Manage_Forward_Bot
-#name : Manage Forward
+#name: Manage Forward
 
 my_bot = botHandler(token=token)
