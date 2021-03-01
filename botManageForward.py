@@ -4,7 +4,7 @@ import operator
 import json
 import collections
 import mysql.connector
-import botHandler
+from botHandler import *
 import mysql.connector
 from telethon import functions, types, events
 from telethon.tl.types import ChatInvite
@@ -13,6 +13,8 @@ from telethon.tl.types import ChatInviteAlready,Chat, ChannelForbidden, ChannelP
 from telethon.tl.functions.channels import JoinChannelRequest
 import time
 import asyncio
+import unidecode
+import re
 
 
 mydb= mysql.connector.connect(
@@ -27,6 +29,38 @@ if mycursor:
     print("connected")
 else:
     print("failed connected")
+
+#format string thành viết liền, không dấu, bỏ icon, bỏ kí tự đặc biệt
+def formatName(text):
+    text = unidecode.unidecode(text)
+    text = re.sub(r'[^(a-z|A-Z|0-9)]', '', text)
+    re.sub(r'[^\w]', '', text)
+    return text
+
+
+#tìm những tên sau kí tự @
+listName=[]
+def detectName(str):
+    for word in str.split():
+        if word.startswith('@') and len(word) >= 3:
+            listName.append(word[1:])
+    return listName
+
+
+# get data from database
+phone_number =''
+api_id = 0
+api_hash = ''
+id_group = 0
+def getData(user_id):
+    sql = "SELECT * FROM customer WHERE user_id = {}".format(user_id)
+    mycursor.execute(sql)
+    res= mycursor.fetchone()
+    global phone_number, api_id, api_hash, id_group
+    phone_number = str(res['phone_number'])
+    api_id = int(res['api_id'])
+    api_hash = res['api_hash']
+    id_group = int(res['id_group'])
 
 def main():
     new_offset = 0
@@ -43,8 +77,6 @@ def main():
         if len(all_updates) > 0:
             for current_update in all_updates:
                 print(current_update)
-
-                
                 
                 first_update_id = int (current_update['update_id'])
                 # print(type(first_update_id))
@@ -108,27 +140,41 @@ def main():
                         new_offset = first_update_id +1
                     
                     print(user_id)
-                    if first_chat_id == -1001456856708:
+                    getData(user_id)
+                    # print(phone_number, id_group)
+                    if first_chat_id == id_group:
                     # id cua group quan ly cac acc clone
-                        sql = "SELECT * FROM customer WHERE user_id = {}".format(user_id)
-                        mycursor.execute(sql)
-                        res= mycursor.fetchone()
-                        phone_number = res['phone_number']
-                        api_id = int(res['api_id'])
-                        api_hash = res['api_hash']
                         client = TelegramClient(phone_number, api_id, api_hash)
                         client.start()
-                        for dialog in client.iter_dialogs():
-                            if dialog.id != -1001456856708:
-                            # id cua group quan ly cac acc clone
-                                print('{} has id {}'.format(dialog.name, dialog.id))
-                                try:
-                                    # send_message chỉ gửi được tin nhắn text, tin nhắn có icon thì không gửi được
-                                    # nếu muốn gửi tin nhắn có icon các kiểu con đà điểu thì phải dùng forward
-                                    # client.send_message(dialog.id, first_chat_text)
-                                    client.forward_messages(dialog.id,message_id, -1001456856708)
-                                except:
-                                    print('{} - khong gui duoc vao group nay'.format(dialog.name))
+                        print(detectName(first_chat_text))
+
+                        #kiểm tra danh sách người nhận cụ thể
+                        #nếu danh sách rỗng thì gửi đến toàn bộ dialog, ngoại trừ group trung gian
+                        if len(detectName(first_chat_text)) == 0:
+                            for dialog in client.iter_dialogs():
+                                if dialog.id != id_group:
+                                # id cua group quan ly cac acc clone
+                                    print('{} has id {}'.format(dialog.name, dialog.id))
+                                    try:
+                                        # send_message chỉ gửi được tin nhắn text, tin nhắn có icon thì không gửi được
+                                        # nếu muốn gửi tin nhắn có icon các kiểu con đà điểu thì phải dùng forward
+                                        # client.send_message(dialog.id, first_chat_text)
+                                        client.forward_messages(dialog.id,message_id, id_group)
+                                    except:
+                                        print('{} - khong gui duoc vao group nay'.format(dialog.name))
+                        #gửi đến những tên được nhắc sau @
+                        else:
+                            for dialog in client.iter_dialogs():
+                                dialogName = formatName(dialog.name)
+                                for i in listName:
+                                    if i == dialogName:
+                                        try:
+                                            client.forward_messages(dialog.id,message_id, id_group)
+                                        except:
+                                            print('{} - khong gui duoc vao group nay'.format(dialog.name))
+                                        break
+                                    
+                        listName.clear()
                         client.disconnect()
 
                     

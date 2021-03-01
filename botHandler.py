@@ -2,7 +2,7 @@ import requests
 import operator
 import json
 
-class BotHandler:
+class botHandler:
     def __init__(self, token):
         self.token = token
         self.api_url = "https://api.telegram.org/bot{}/".format(token)
@@ -68,4 +68,4 @@ token = '1623181614:AAE0U7Y5BoVjgP3qCA5-tHSYd7bjerpr2Mo' #Token of your bot
 # username: @Manage_Forward_Bot
 #name : Manage Forward
 
-my_bot = BotHandler(token=token)
+my_bot = botHandler(token=token)
