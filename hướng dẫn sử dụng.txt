@@ -1,5 +1,5 @@
 Mỗi khách hàng sẽ được cấp 1 account, trong mỗi account có 1 group được tạo sẵn tên là "Forward Messages"
-Khách hàng chỉ cần gửi tin nhắn vào group "Forward Messages", tin nhắn đó sẽ được forward đến tất cả các group mà account clone
+Khách hàng chỉ cần gửi tin nhắn vào group "Forward Messages", tin nhắn đó sẽ được forward đến tất cả các group mà account
 tham gia.
 Nếu khách hàng muốn chỉ gửi đến một số group nhất định, ví dụ có 3 group:
 - Group 1
