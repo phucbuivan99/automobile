@@ -141,6 +141,7 @@ def main():
                         new_offset = first_update_id +1
                     
                     print(user_id)
+                    print("ok")
                     getData(user_id)
                     # print(phone_number, id_group)
                     if first_chat_id == id_group:
