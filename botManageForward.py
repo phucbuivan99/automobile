@@ -99,7 +99,7 @@ def main():
                     user_id = current_update['message']['from']['id']
                     group_title= current_update['message']['chat']['title']
                     
-                
+
                     
                     if 'text' not in current_update['message'] :
                         first_chat_text = 'New member'
@@ -155,24 +155,25 @@ def main():
                             for dialog in client.iter_dialogs():
                                 if dialog.id != id_group and dialog.id < 0:
                                     print('{} has id {}'.format(dialog.name, dialog.id))
+                                    print(message_id)
                                     try:
-                                        # send_message chỉ gửi được tin nhắn text, tin nhắn có icon thì không gửi được
+                                        # send_message chỉ gửi được tin nhắn text
                                         # nếu muốn gửi tin nhắn có icon các kiểu con đà điểu thì phải dùng forward
                                         # client.send_message(dialog.id, first_chat_text)
-                                        client.forward_messages(dialog.id,message_id, id_group)
+                                        client.forward_messages(dialog.id,,id_group)
                                     except:
                                         print('{} - khong gui duoc vao group nay'.format(dialog.name))
                         #gửi đến những tên được nhắc sau @
-                        else:
-                            for dialog in client.iter_dialogs():
-                                dialogName = formatName(dialog.name)
-                                for i in listName:
-                                    if i == dialogName:
-                                        try:
-                                            client.forward_messages(dialog.id,message_id, id_group)
-                                        except:
-                                            print('{} - khong gui duoc vao group nay'.format(dialog.name))
-                                        break
+                        # else:
+                        #     for dialog in client.iter_dialogs():
+                        #         dialogName = formatName(dialog.name)
+                        #         for i in listName:
+                        #             if i == dialogName:
+                        #                 # try:
+                        #                 client.forward_messages(dialog.id,message_id, id_group)
+                        #                 # except:
+                        #                 #     print('{} - khong gui duoc vao group nay'.format(dialog.name))
+                        #                 break
                                     
                         listName.clear()
                         client.disconnect()
@@ -185,4 +186,3 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt:
         exit()
-        

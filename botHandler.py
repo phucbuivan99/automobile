@@ -64,8 +64,8 @@ class botHandler:
     #         return False
     
 
-token = '1623181614:AAE0U7Y5BoVjgP3qCA5-tHSYd7bjerpr2Mo' #Token of your bot 
-# username: @Manage_Forward_Bot
+token = '1677183622:AAG-qkWX_5EhpxzIpdSgmKtyHn49r4UXm4E' #Token of your bot 
+# username: @share_mqm_bot
 #name: Manage Forward
 
 my_bot = botHandler(token=token)
